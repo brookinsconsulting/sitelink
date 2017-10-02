@@ -151,10 +151,16 @@
 					}
 				}
 			}
-			if(!($UseMatch=isset($Match[$SiteLink->currentHost])?$Match[$SiteLink->currentHost]:false)){
+
+			//if(!($UseMatch=isset($Match[$SiteLink->currentHost])?$Match[$SiteLink->currentHost]:false)){
 				$Matchup=0;
 				foreach($Match as $UseMatchItem){
 					if($UseMatchItem['locale']==$SiteLink->currentLocale){
+                                                if( (int)$SiteLink->objectNode->NodeID == (int)$UseMatchItem['root_node_id'] ||
+                                                    (int)$SiteLink->objectNode->ParentNodeID == (int)$UseMatchItem['root_node_id'] ) {
+                                                        $UseMatch = $UseMatchItem;
+                                                        break;
+                                                }
 						if ($SiteLink->siteAccess['name'] == $UseMatchItem['siteaccess']) {
 							$UseMatchItem['host'] = '';
 							$UseMatch = $UseMatchItem;
@@ -169,8 +175,8 @@
 				if(!$UseMatch){
 					eZDebug::writeWarning('No host matches found have been found.','SiteLink Operator: PHP Class Warning');
 				}
-			}
-			
+			//}
+
 			$res = $SiteLink->hyperlink($operatorValue,$UseMatch?$UseMatch['host']:false);
 			$namedParameters['UseMatch'] = $Match;
 			return $res;
